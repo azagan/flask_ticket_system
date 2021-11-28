@@ -1,0 +1,35 @@
+version: "3.5"
+
+services:
+  flask:
+    build: .
+    container_name: flask
+    restart: always
+    environment:
+      PG_HOST: pg
+      REDIS_HOST: redis
+    ports:
+      - 8080:8080
+    depends_on:
+      - pg
+      - redis
+  pg:
+    image: postgres:12
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ticket_db
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./data/pgdata:/var/lib/postgresql/data/pgdata
+    ports:
+      - 5432:5432
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    ports:
+      - 6379:6379
